@@ -32,12 +32,7 @@ public class SampleController {
 
 	@FXML
 	public void btnPlayMusic() {
-		
-		int indice = 0; //lvMusicas.getSelectionModel().getSelectedIndex();
-
-		AudioManager am = new AudioManager(lvMusicas.getItems().get(indice).getFilePath());
-		InputStream stream = new ByteArrayInputStream(am.getSamples());
-		am.playMusic(stream);
+		ProgramManager.playMusic(lvMusicas);
 	}
 
 	@FXML
