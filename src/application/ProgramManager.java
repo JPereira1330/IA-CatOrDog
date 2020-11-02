@@ -1,6 +1,7 @@
 package application;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import javafx.scene.control.ListView;
 
@@ -26,4 +27,26 @@ public class ProgramManager {
 		return true;
 	}
 	
+	
+	public static boolean addNewFolder( ListView<AudioClass> lvMusicas ) {
+		
+		ArrayList<File> musicas;
+		AudioClass metaDataMusica;
+		
+		musicas = Ferramentas.selecionarPasta();
+		if(musicas == null) {
+			return false;
+		}
+		
+		for(int i = 0; musicas.size() > i; i++) {
+			metaDataMusica = new AudioClass();
+			metaDataMusica.setName(musicas.get(i).getName());
+			metaDataMusica.setSpaceUsable(musicas.get(i).getUsableSpace());
+			metaDataMusica.setFilePath(musicas.get(i).getAbsolutePath());
+			
+			lvMusicas.getItems().add(metaDataMusica);
+		}
+		
+		return true;
+	}
 }
