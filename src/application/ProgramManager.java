@@ -1,8 +1,6 @@
 package application;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import javafx.scene.control.ListView;
@@ -14,7 +12,7 @@ public class ProgramManager {
 		File musica;
 		AudioClass metaDataMusica;
 
-		musica = Ferramentas.selecionarArquivo();
+		musica = Ferramentas.selecionarArquivo(0);
 		if (musica == null) {
 			return false;
 		}
@@ -26,6 +24,25 @@ public class ProgramManager {
 
 		lvMusicas.getItems().add(metaDataMusica);
 
+		return true;
+	}
+
+	public static String selectArff() {
+
+		File arff;
+
+		arff = Ferramentas.selecionarArquivo(1);
+		if (arff == null) {
+			return null;
+		}
+
+		return arff.getAbsolutePath();
+	}
+
+	public static boolean removeMusic(ListView<AudioClass> lvMusicas) {
+		int index = lvMusicas.getSelectionModel().getSelectedIndex();
+		System.out.println("Indice: " + index);
+		lvMusicas.getItems().remove(index);
 		return true;
 	}
 
@@ -51,15 +68,18 @@ public class ProgramManager {
 		return true;
 	}
 
-	public static boolean playMusic(ListView<AudioClass> lvMusicas) {
+	public static double[] analyseArff(String pathDatabaseArff, String pathDatabaseTeste, double tempoAprender, int quantiaQueAprender) {
 
-		int indice = lvMusicas.getSelectionModel().getSelectedIndex();
+		if (pathDatabaseArff.isEmpty() || pathDatabaseTeste.isEmpty())
+			return null;
 
-		AudioManager am = new AudioManager(lvMusicas.getItems().get(indice).getFilePath());
-		InputStream stream = new ByteArrayInputStream(am.getSamples());
+		WekaManager wekaArff = new WekaManager();
+
+		wekaArff.setPathDatabase(pathDatabaseArff);
+		wekaArff.setPathTestArff(pathDatabaseTeste);
+		wekaArff.loadArffDatabases();
 		
-		am.playMusic(stream);
-		
-		return false;
+		return wekaArff.multilayerPerceptron("a", 0.2, tempoAprender, quantiaQueAprender);
 	}
+
 }

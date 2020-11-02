@@ -10,12 +10,18 @@ import javafx.stage.FileChooser;
 
 public class Ferramentas {
 
-	public static File selecionarArquivo() {
+	public static File selecionarArquivo(int id) {
 
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("*.WAV", "*.wav"));
-		fileChooser.setInitialDirectory(new File("C:\\Users"));
 		
+		switch(id) {
+			case 0:
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("*.WAV"));
+				break;
+		}
+		
+		fileChooser.setInitialDirectory(new File("C:\\Users\\Ny3x\\Documents\\Projetos\\AV02-CATorDOG\\database"));
+				
 		File imgSelec = fileChooser.showOpenDialog(null);
 		if (imgSelec != null) {
 			return imgSelec;

@@ -6,8 +6,11 @@ public class AudioClass {
 	private int duration;
 	private String filePath;
 	private long spaceUsable;
+	private String resultado;
 	
-	public AudioClass() {}
+	public AudioClass() {
+		this.resultado = "";
+	}
 	
 	public AudioClass(String name, int duration, String filePath, long spaceUsable) {
 		super();
@@ -17,6 +20,15 @@ public class AudioClass {
 		this.spaceUsable = spaceUsable;
 	}
 
+	public AudioClass(String name, int duration, String filePath, long spaceUsable, String resultado) {
+		super();
+		this.name = name;
+		this.duration = duration;
+		this.filePath = filePath;
+		this.spaceUsable = spaceUsable;
+		this.resultado = resultado;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -48,9 +60,19 @@ public class AudioClass {
 	public void setSpaceUsable(long spaceUsable) {
 		this.spaceUsable = spaceUsable;
 	}
+	
+	public String getResultado() {
+		return resultado;
+	}
+
+	public void setResultado(String resultado) {
+		this.resultado = resultado;
+	}
 
 	@Override
 	public String toString() {
+		if(getResultado() != "")
+			return "Resultado: "+getResultado()+" \t Arquivo:"+getName();
 		return getName();
 	}
 	
