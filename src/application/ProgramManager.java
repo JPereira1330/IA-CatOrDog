@@ -57,6 +57,7 @@ public class ProgramManager {
 
 		AudioManager am = new AudioManager(lvMusicas.getItems().get(indice).getFilePath());
 		InputStream stream = new ByteArrayInputStream(am.getSamples());
+		
 		am.playMusic(stream);
 		
 		return false;

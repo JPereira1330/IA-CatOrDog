@@ -28,7 +28,7 @@ public class Ferramentas {
 
 		int ret;
 		File path;
-		String arquivos[];
+		File[] arquivos;
 		JFileChooser fileChooser = new JFileChooser();
 		ArrayList<File> arquivosList = new ArrayList<>();
 		
@@ -44,11 +44,12 @@ public class Ferramentas {
 			return null;
 		}
 		
-		arquivos = path.list();
+		arquivos = path.listFiles();
 		
-		for(int i = 0; i < arquivos.length; i++)
-			if(arquivos[i].endsWith(".wav") || arquivos[i].endsWith(".WAV"))
-				arquivosList.add(new File(arquivos[i]));
+		for(int i = 0; i < arquivos.length; i++) {
+			if(arquivos[i].getName().endsWith(".wav") || arquivos[i].getName().endsWith(".WAV"))
+				arquivosList.add(arquivos[i]);
+		}
 		
 		return arquivosList;
 	}
