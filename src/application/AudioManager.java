@@ -1,91 +1,86 @@
 package application;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.TargetDataLine;
-
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class AudioManager {
 
-	public static void playMusic(String file) {
-		
-		AudioFormat format;
-		DataLine.Info info;
-		String uriString = new File(file).toURI().toString();
-		Media pick = new Media(uriString); 
-		MediaPlayer player = new MediaPlayer(pick);
-		
-		format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);
-		
+	private AudioFormat format;
+	private byte[] samples;
+
+	public AudioManager(String filepath) {
 		try {
-	        info = new DataLine.Info(TargetDataLine.class, format);
-	        final TargetDataLine targetLine = (TargetDataLine) AudioSystem.getLine(info);
-	        targetLine.open();
-
-	        AudioInputStream audioStream = new AudioInputStream(targetLine);
-
-	        byte[] buf = new byte[256];
-
-	        Thread targetThread = new Thread() {
-	            public void run() {
-	                targetLine.start();
-	                try {
-	                    audioStream.read(buf);
-	                } catch (IOException e) {
-	                    e.printStackTrace();
-	                }
-	            }
-	        };
-
-	        targetThread.start();
-	        
-		} catch (Exception e) {
-		    e.printStackTrace();
+			AudioInputStream stream = AudioSystem.getAudioInputStream(new File(filepath));
+			format = stream.getFormat();
+			samples = getSamples(stream);
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		
 	}
-	
+
+	public void playMusic(InputStream source) {
+
+		int bufferSize = format.getFrameSize() * Math.round(format.getSampleRate() / 10);
+		byte[] buffer = new byte[bufferSize];
+		SourceDataLine line;
+
+		try {
+			DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
+			line = (SourceDataLine) AudioSystem.getLine(info);
+			line.open(format, bufferSize);
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+			return;
+		}
+
+		line.start();
+
+		try {
+			int numBytesRead = 0;
+			while (numBytesRead != -1) {
+				numBytesRead = source.read(buffer, 0, buffer.length);
+				if (numBytesRead != -1) {
+					line.write(buffer, 0, numBytesRead);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		line.drain();
+		line.close();
+	}
+
+	private byte[] getSamples(AudioInputStream stream) {
+		int length = (int) (stream.getFrameLength() * format.getFrameSize());
+		byte[] samples = new byte[length];
+		DataInputStream in = new DataInputStream(stream);
+		try {
+			in.readFully(samples);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return samples;
+	}
+
+	public AudioFormat getFormat() {
+		return format;
+	}
+
+	public byte[] getSamples() {
+		return samples;
+	}
+
 }
-
-
-
-/*
-static AudioFormat format;
-static DataLine.Info info;
-
-public static void input() {
-    format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);
-
-    try {
-        info = new DataLine.Info(TargetDataLine.class, format);
-        final TargetDataLine targetLine = (TargetDataLine) AudioSystem.getLine(info);
-        targetLine.open();
-
-        AudioInputStream audioStream = new AudioInputStream(targetLine);
-
-        byte[] buf = new byte[256]
-
-        Thread targetThread = new Thread() {
-            public void run() {
-                targetLine.start();
-                try {
-                    audioStream.read(buf);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        targetThread.start();
-} catch (LineUnavailableException e) {
-    e.printStackTrace();
-} catch (IOException e) {
-    e.printStackTrace();
-} */
