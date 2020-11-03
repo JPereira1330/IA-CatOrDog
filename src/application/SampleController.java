@@ -57,8 +57,8 @@ public class SampleController {
 		if(porcentagem == null)
 			return;
 
-		porcentagemARFFDog.setText((porcentagem[0]*100)+"%");
-		porcentagemARFFCat.setText((porcentagem[1]*100)+"%");
+		porcentagemARFFDog.setText( String.format("%.2f", (porcentagem[0]*100)) +"%");
+		porcentagemARFFCat.setText( String.format("%.2f", (porcentagem[1]*100)) +"%");
 	}
 
 }
