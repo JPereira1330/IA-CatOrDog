@@ -19,8 +19,6 @@ public class Ferramentas {
 				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("*.WAV"));
 				break;
 		}
-		
-		fileChooser.setInitialDirectory(new File("C:\\Users\\Ny3x\\Documents\\Projetos\\AV02-CATorDOG\\database"));
 				
 		File imgSelec = fileChooser.showOpenDialog(null);
 		if (imgSelec != null) {

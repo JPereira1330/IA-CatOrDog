@@ -41,7 +41,6 @@ public class ProgramManager {
 
 	public static boolean removeMusic(ListView<AudioClass> lvMusicas) {
 		int index = lvMusicas.getSelectionModel().getSelectedIndex();
-		System.out.println("Indice: " + index);
 		lvMusicas.getItems().remove(index);
 		return true;
 	}
